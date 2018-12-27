@@ -63,7 +63,7 @@ contract DiamondBase{
     //_tokenId 鑽石ID
     function _transfer(address _from, address _to, uint256 _tokenId) internal {
         //此鑽石ID必須是屬於原本使用者
-        require(Diamond_Index_To_Owner[_tokenId] != _from);
+        require(Diamond_Index_To_Owner[_tokenId] == _from);
         
         //將此ID所對應的使用者改變
         Diamond_Index_To_Owner[_tokenId] = _to;
