@@ -27,3 +27,16 @@ Diamond Chain
 
 某些函式因為ID->Index的mapping被修改後，沒有被改過故無法運作，目前已修正
 
+***
+
+
+目前輸入進去的都為鑽石ID，進入Contract要注意跟Owner對應的主要為那個ID在鑽石的Array上的index
+
+
+對應關係為
+ID -> Index -> Owner 
+
+
+Owner -> Index 找到在Array上鑽石的Profile
+
+***
