@@ -74,7 +74,7 @@ contract DiamondBase is DiamondAccessControl{
     mapping(uint256 => address) internal DiamondIndexToOwner;
     
     mapping(address => uint256[]) internal OwnerToDiamondId;
-    mapping(uint256 => address) public DiamondIndexToapproved;
+    mapping(uint256 => address) internal DiamondIndexToapproved;
     
     mapping(uint256 => uint256) internal DiamodIdToDiamondIndex;
    
