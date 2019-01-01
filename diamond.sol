@@ -74,9 +74,11 @@ contract DiamondBase is DiamondAccessControl{
     mapping(uint256 => address) internal DiamondIndexToOwner;
     
     mapping(address => uint256[]) internal OwnerToDiamondId;
-    mapping(uint256 => address) internal DiamondIndexToapproved;
+    mapping(uint256 => address) public DiamondIndexToapproved;
     
     mapping(uint256 => uint256) internal DiamodIdToDiamondIndex;
+   
+    
     function _transfer(address _from, address _to, uint256 _tokenId) internal{
         require(DiamondIndexToOwner[_tokenId] == _from);
         
@@ -104,28 +106,27 @@ contract DiamondBase is DiamondAccessControl{
            diamond_price: _diamond_price,
            diamond_carat: _diamond_carat
         });
+        
         uint256 newDiamondId = Diamonds.push(_diamond_profile) - 1;
         _transfer(address(0), _owner, newDiamondId);
-     
+        
+        require(DiamodIdToDiamondIndex[_diamond_id] == 0);
         DiamodIdToDiamondIndex[_diamond_id] = newDiamondId;
+        
         return newDiamondId;
     }
 }
 
 contract DiamondOwnerShip is DiamondBase, ERC721 {
-    bytes4 constant interfaceSignature_ERC721 = 
-        bytes4(keccak256('totalSupply()'))^
-        bytes4(keccak256('balanceOf(adress'))^
-        bytes4(keccak256('ownerof(uint256)'))^
-        bytes4(keccak256('approve(address, uint256)')) ^
-        bytes4(keccak256('transfer(address, uint256)')) ^
-        bytes4(keccak256('transferFrom(address, address, uint256)'));
+    
         
    function _owns(address _claimant, uint256 _tokenId) internal view returns (bool){
-       return DiamondIndexToOwner[_tokenId] == _claimant;
+       uint256 diamond_index = DiamodIdToDiamondIndex[_tokenId];
+       return DiamondIndexToOwner[diamond_index] == _claimant;
    }
    
    function _approvedFor(address _claimant, uint256 _tokenId) internal view returns (bool){
+      
        return DiamondIndexToapproved[_tokenId] == _claimant;
    }
    
@@ -141,8 +142,7 @@ contract DiamondOwnerShip is DiamondBase, ERC721 {
         uint256 _tokenId = DiamodIdToDiamondIndex[diamondId];
         require(_to != address(0));
         require(_to != address(this));
-        
-       
+        require(_to != msg.sender);
         
         _transfer(msg.sender, _to, _tokenId);
     }
@@ -153,7 +153,7 @@ contract DiamondOwnerShip is DiamondBase, ERC721 {
     ) external
     {
         require(_owns(msg.sender, _tokenId));
-        
+       
         _approve(_tokenId, _to);
         
         emit Approval(msg.sender, _to, _tokenId);
@@ -166,11 +166,10 @@ contract DiamondOwnerShip is DiamondBase, ERC721 {
     ) external
     {
         require(_to != address(0));
-        require(_to != address(this));
         require(_approvedFor(msg.sender, _tokenId));
         require(_owns(_from, _tokenId));
-        
-        _transfer(_from, _to, _tokenId);
+        uint256 index = DiamodIdToDiamondIndex[_tokenId];
+        _transfer(_from, _to, index);
     }
     
     
@@ -223,3 +222,4 @@ contract DiamondCore is DiamondCreate
     } 
    
 }
+
