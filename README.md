@@ -19,4 +19,11 @@ Diamond Chain
 
 使用者使用鑽石ID，在合約中會將ID轉成index，在利用index找到鑽石的資訊。
 
+2019/01/01
+@Bug修正
+
+讓Create鑽石的id變成唯一
+
+
+某些函式因為ID->Index的mapping被修改後，沒有被改過故無法運作，目前已修正
 
