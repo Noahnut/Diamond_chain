@@ -134,19 +134,7 @@ contract DiamondOwnerShip is DiamondBase, ERC721 {
        DiamondIndexToapproved[_tokenId] = _approved;
    }
    
-   function transfer(
-       address _to, 
-       uint256 diamondId
-    ) external
-    {
-        uint256 _tokenId = DiamodIdToDiamondIndex[diamondId];
-        require(_to != address(0));
-        require(_to != address(this));
-        require(_to != msg.sender);
-        
-        _transfer(msg.sender, _to, _tokenId);
-    }
-    
+   
     function approve(
         address _to,
         uint256 _tokenId
