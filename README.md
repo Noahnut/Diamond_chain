@@ -1,5 +1,6 @@
 Diamond Chain
-***NOTE: Deploy contract gas limit 要大於5000000
+***
+NOTE: Deploy contract gas limit 要大於5000000
 
 
 目前輸入進去的都為鑽石ID，進入Contract要注意跟Owner對應的主要為那個ID在鑽石的Array上的index
