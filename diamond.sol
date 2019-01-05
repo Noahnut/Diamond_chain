@@ -16,7 +16,7 @@ contract DiamondAccessControl{
     }
     
     modifier DevelopPremission(){
-        require(devlop_company == msg.sender);
+        require(msg.sender == devlop_company);
         _;
     }
     
@@ -45,6 +45,8 @@ contract ERC721{
     
     event ShowOwnerDiamond(uint256 ID, uint price, uint carat, string color, string clear);
     event prevaccount(address prev);
+    
+    event Showunpay(uint256 ID);
     // supportsInterface(bytes4 _interfaceID) external view returns (bool);
 }
 
@@ -152,16 +154,36 @@ contract DiamondBase is DiamondPrice{
         address prev;
     }
     
+    struct money_list{
+        uint diamond_index;
+        bool take;
+    }
     
     
     
     diamond_profile[] Diamonds;
+    
+    money_list[] list;
+    
     
     mapping(uint256 => address) internal DiamondIndexToOwner;
     mapping(address => uint256[]) internal OwnerToDiamondId;
     mapping(uint256 => address) internal DiamondIndexToapproved;
     mapping(uint256 => uint256) internal DiamodIdToDiamondIndex;
     
+    mapping(uint256 => uint256) internal DiamondIndexToListId;
+    
+    function _getTheDiamond(address company, uint256 DiamondIndex) internal 
+    {
+        if(root_premission[company] != true){return;}
+        else if(root_premission[company] == true){
+              money_list memory temp;
+              temp.diamond_index = DiamondIndex;
+              temp.take = false;
+              uint256 list_index = list.push(temp)-1;
+              DiamondIndexToListId[DiamondIndex] = list_index;
+        }
+    }
     
     
     function _transfer(address _from, address _to, uint256 _tokenId) internal{
@@ -172,6 +194,9 @@ contract DiamondBase is DiamondPrice{
             if(OwnerToDiamondId[_from][i] == _tokenId){
                 OwnerToDiamondId[_from][i] = 0;
             }
+        }
+        if(_from != address(0) || _from != address(this)){
+             _getTheDiamond(_from, _tokenId);
         }
         
         OwnerToDiamondId[_to].push(_tokenId);
@@ -210,6 +235,7 @@ contract DiamondBase is DiamondPrice{
     
     function ChangeAllPrice() external{
         require(root_premission[msg.sender] == true);
+
         for(uint256 i = 1; i < Diamonds.length; i++){
             Diamonds[i].diamond_price = price_count(Diamonds[i].diamond_carat, Diamonds[i].diamond_color, Diamonds[i].diamond_clear);
         }
@@ -309,14 +335,30 @@ contract DiamondCore is DiamondCreate
         Diamonds.push(_diamond_profile);
         devlop_company = msg.sender;}
     
-    function showOwnerDiamond() external {
+    
+     function showOwnerDiamond() external {
         for(uint i = 0; i < OwnerToDiamondId[msg.sender].length; i++){
             uint256 DiamondIndex = OwnerToDiamondId[msg.sender][i];
             if(DiamondIndex != 0){
                 emit ShowOwnerDiamond(Diamonds[DiamondIndex].diamond_id, Diamonds[DiamondIndex].diamond_price, Diamonds[DiamondIndex].diamond_carat, Diamonds[DiamondIndex].diamond_color, Diamonds[DiamondIndex].diamond_clear);
             }
         }
-     
     } 
+    
+    function showAllunpay() external DevelopPremission{
+        for(uint i = 0; i < list.length; i++){
+            if(list[i].take == false){
+                uint256 _diamond_id = Diamonds[list[i].diamond_index].diamond_id;
+                emit Showunpay(_diamond_id);
+            }
+        }
+    }
+    
+    function GetTheMoney(uint256 diamond_id) external DevelopPremission{
+        uint256 _diamond_index = DiamodIdToDiamondIndex[diamond_id];
+        uint256 list_index = DiamondIndexToListId[_diamond_index];
+        list[list_index].take = true;
+    }
 }
+
 
