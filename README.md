@@ -44,3 +44,23 @@ ID -> Index -> Owner
 Owner -> Index 找到在Array上鑽石的Profile
 
 ***
+***
+鑽石金額計算公式
+
+克拉數 * 100 * (淨度與顏色分級對照表金額)
+
+NOTE!!!
+在Create鑽石時 Color跟Clear請根據國際鑽石分級表代號
+
+Color 
+
+
+D -> G -> J -> M -> Z
+
+Clear
+
+
+FL -> VVS -> VS -> SL -> L1
+
+***
+
