@@ -1,5 +1,5 @@
 Diamond Chain
-***
+***NOTE: Deploy contract gas limit 要大於5000000
 
 
 目前輸入進去的都為鑽石ID，進入Contract要注意跟Owner對應的主要為那個ID在鑽石的Array上的index
@@ -43,6 +43,13 @@ Note:
 
 
 ***
+開發者能夠透過gettheDiamond()來發現鑽石公司賣出鑽石
+
+然後就會紀錄起來，透過showallunpay()來找到哪些鑽石是尚未付款
+
+
+***
+***
 
 2018/12/29
 
@@ -79,3 +86,5 @@ Note:
 鑽石價格轉成浮動，會根據鑽石等級表改動
 
 將權限分成開發者、公司、使用者
+
+開發者拿到錢惹
