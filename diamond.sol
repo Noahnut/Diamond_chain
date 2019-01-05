@@ -110,7 +110,7 @@ contract DiamondPrice is DiamondAccessControl{
         color = upper(color);
         clear = upper(clear);
         uint256 number = color_clear_price[color][clear];
-        return (number * uint256(carat));
+        return (number * uint256(carat) * 100);
         
     }
     
