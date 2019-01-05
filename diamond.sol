@@ -209,6 +209,7 @@ contract DiamondBase is DiamondPrice{
     }
     
     function ChangeAllPrice() external{
+        require(root_premission[msg.sender] == true);
         for(uint256 i = 1; i < Diamonds.length; i++){
             Diamonds[i].diamond_price = price_count(Diamonds[i].diamond_carat, Diamonds[i].diamond_color, Diamonds[i].diamond_clear);
         }
