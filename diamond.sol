@@ -49,7 +49,7 @@ contract ERC721{
     event Approval(address owner, address approved, uint256 tokenId);
     
     event ShowOwnerDiamond(uint256 ID, uint price, uint carat);
-    
+    event prevaccount(address prev);
     // supportsInterface(bytes4 _interfaceID) external view returns (bool);
 }
 
@@ -64,6 +64,7 @@ contract DiamondBase is DiamondAccessControl{
         uint256 diamond_id;
         uint diamond_price;
         uint diamond_carat;
+        address prev;
     }
     
   
@@ -91,6 +92,7 @@ contract DiamondBase is DiamondAccessControl{
         
         OwnerToDiamondId[_to].push(_tokenId);
         DiamondIndexToOwner[_tokenId] = _to;
+        Diamonds[_tokenId].prev = _from;
         emit Transfer(_from, _to, _tokenId);
     }
     
@@ -104,7 +106,8 @@ contract DiamondBase is DiamondAccessControl{
         diamond_profile memory _diamond_profile = diamond_profile({
            diamond_id: _diamond_id,
            diamond_price: _diamond_price,
-           diamond_carat: _diamond_carat
+           diamond_carat: _diamond_carat,
+           prev         : address(0)
         });
         
         uint256 newDiamondId = Diamonds.push(_diamond_profile) - 1;
@@ -180,6 +183,13 @@ contract DiamondCreate is DiamondOwnerShip
 
         _transfer(address(this), target_address, newDiamondId);
     }    
+    
+    function look_prevaccount(uint256 diamond_id) external{
+        require(root_premission[msg.sender] == true);
+        uint256 diamondIndex = DiamodIdToDiamondIndex[diamond_id];
+        address prev_account = Diamonds[diamondIndex].prev;
+        emit prevaccount(prev_account);
+    }
 }
 
 contract DiamondCore is DiamondCreate
@@ -189,7 +199,8 @@ contract DiamondCore is DiamondCreate
        diamond_profile memory _diamond_profile = diamond_profile({
            diamond_id: 0,
            diamond_price: 0,
-           diamond_carat: 0
+           diamond_carat: 0,
+           prev:  address(0)
         });
         
         Diamonds.push(_diamond_profile);
@@ -210,4 +221,3 @@ contract DiamondCore is DiamondCreate
     } 
    
 }
-
